@@ -69,6 +69,10 @@ const register = async (req, res) => {
     }
 }
 
+function logout(req, res) {
+    // destroy session
+}
+
 const checkSession = async (req, res) => {
     try {
         res.status(200).json(req.user)
@@ -77,4 +81,18 @@ const checkSession = async (req, res) => {
     }
 }
 
-module.exports = {login, register, checkSession};
+function getUserDetails(req, res) {
+    const {id} = req.query;
+    try {
+        DB.query(`SELECT * FROM Users WHERE id = ?`,[id], (error, result) => {
+            if(result.lenght > 0) {
+                return res.status(200).json({result});
+            }
+        });
+    } catch(error) {
+        return res.status(500).json(error);
+    }
+    
+}
+
+module.exports = {login, register, checkSession, getUserDetails, logout};

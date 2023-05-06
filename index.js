@@ -4,6 +4,7 @@ const dotenv = require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 
 const userRoutes = require('./src/users/users.routes');
+const anunciosRoutes = require('./src/anuncios/anuncios.routes');
 
 // const {connect} = require('./src/utils/database');
 // const db = connect();
@@ -16,11 +17,11 @@ cloudinary.config({
 })
 const app = express();
 
-
 app.use(express.json());
-app.use(express.urlencoded({extended: true}))
+app.use(express.urlencoded({extended: true}));
 
 app.use('/user', userRoutes);
+app.use('/anuncios', anunciosRoutes);
 app.get( "/", (req, res) => {
     res.status(200).json({"message": "hola"});
 })
