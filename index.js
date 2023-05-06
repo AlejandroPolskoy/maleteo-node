@@ -21,6 +21,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 
 app.use('/user', userRoutes);
+app.get( "/", (req, res) => {
+    res.status(200).json({"message": "hola"});
+})
 
 app.use((error, req, res, next) => {
     return res.status(error.status || 500).json(`Error: ${error.message || "Unexpected error"} `);
