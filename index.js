@@ -17,7 +17,7 @@ cloudinary.config({
 })
 const app = express();
 
-server.use((req, res , next) => {
+app.use((req, res , next) => {
     res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
     res.status(200).json({"message": "Bienvenida al Maleteo"});
 })
 
-server.use(cors({
+app.use(cors({
     origin: "*",
     credentials: true
 }))
