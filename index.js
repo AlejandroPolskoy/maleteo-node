@@ -21,6 +21,7 @@ app.use((req, res , next) => {
     res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Origin', '*');
     next();
 })
 
@@ -33,13 +34,13 @@ app.get("/", (req, res) => {
     res.status(200).json({"message": "Bienvenida al Maleteo"});
 })
 
+app.use((error, req, res, next) => {
+    return res.status(error.status || 500).json(`Error: ${error.message || "Unexpected error"} `);
+})
+
 app.use(cors({
     origin: "*",
     credentials: true
 }))
-
-app.use((error, req, res, next) => {
-    return res.status(error.status || 500).json(`Error: ${error.message || "Unexpected error"} `);
-})
 
 app.listen(PORT, ()=> console.log(`listening on http://localhost:${PORT}`));
