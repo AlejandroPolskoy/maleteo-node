@@ -17,14 +17,26 @@ cloudinary.config({
 })
 const app = express();
 
+server.use((req, res , next) => {
+    res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+})
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use('/user', userRoutes);
 app.use('/anuncios', anunciosRoutes);
-app.get( "/", (req, res) => {
+app.get("/", (req, res) => {
     res.status(200).json({"message": "Bienvenida al Maleteo"});
 })
+
+server.use(cors({
+    origin: "*",
+    credentials: true
+}))
 
 app.use((error, req, res, next) => {
     return res.status(error.status || 500).json(`Error: ${error.message || "Unexpected error"} `);
