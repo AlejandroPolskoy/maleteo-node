@@ -23,7 +23,7 @@ app.use(express.urlencoded({extended: true}));
 app.use('/user', userRoutes);
 app.use('/anuncios', anunciosRoutes);
 app.get( "/", (req, res) => {
-    res.status(200).json({"message": "hola"});
+    res.status(200).json({"message": "Bienvenida al Maleteo"});
 })
 
 app.use((error, req, res, next) => {
