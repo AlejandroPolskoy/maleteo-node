@@ -63,7 +63,7 @@ const register = async (req, res) => {
 
         DB.query(
             `INSERT INTO Users (id, email, password, name, surname, direction, birthdate, image) VALUES(0, ?, ?, ?, ?, ?, ?, ?)`
-            , [newUser.email, newUser.passwordCrypted, newUser.name, newUser.surname, newUser.direction, newUser.birthdate, newUser.image],
+            , [newUser.email, newUser.password, newUser.name, newUser.surname, newUser.direction, newUser.birthdate, newUser.image],
             (err, result)=>{
                 return res.status(201).json(result);
             }
