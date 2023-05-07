@@ -1,7 +1,7 @@
 //const User = require('./users.model');
 const bcrypt = require('bcrypt');
 const {validateEmail, validatePassword, usedEmail} = require('../utils/validators');
-//const { generateSign } = require('../utils/jwt');
+const { generateSign } = require('../utils/jwt');
 var mysql = require('mysql');
 const dotenv = require('dotenv').config();
 const DB = mysql.createConnection({
@@ -12,24 +12,28 @@ const DB = mysql.createConnection({
 });
 
 const login = async (req, res) => {
-    //console.log( req.body);
+    console.log( req.body);
     try {
         const userInfo = req.body;
         
-        if(!userInfo.email || !userInfo.password) return res.status(404).json({message: 'email and password is required'})
+        if(!userInfo.email || !userInfo.password) return res.status(201).json({message: 'Email and password is required'})
 
         DB.query(`SELECT * FROM Users WHERE email = ?`,[req.body.email], (error, results) => {
             console.log("results: ", error, results);
 
             if(results.length == 0) {
-                return res.status(404).json({message: 'invalid email address'})
+                return res.status(201).json({message: 'invalid email address'})
             }
 
-            if(!bcrypt.compareSync(req.body.password, results[0].password)){
-                return res.status(404).json({message: 'invalid password'});
+            if(req.body.password != results[0].password) {
+                return res.status(201).json({message: 'invalid password'});
             }
 
-            const token = generateSign(results[0].id, userInfo.email)
+            // if(!bcrypt.compareSync(req.body.password, results[0].password)) {
+            //     return res.status(400).json({message: 'invalid password'});
+            // }
+
+            const token = generateSign(results[0].id, userInfo.email);
             return res.status(200).json({userInfo, token});
         });
 
@@ -55,13 +59,13 @@ const register = async (req, res) => {
             return res.status(400).send({message: 'Email is already in use'});
         }
 
-        newUser.password = bcrypt.hashSync(newUser.password, 10);
+        newUser.passwordCrypted = bcrypt.hashSync(newUser.password, 10);
 
         DB.query(
             `INSERT INTO Users (id, email, password, name, surname, direction, birthdate, image) VALUES(0, ?, ?, ?, ?, ?, ?, ?)`
-            , [newUser.email, newUser.password, newUser.name, newUser.surname, newUser.direction, newUser.birthdate, newUser.image],
+            , [newUser.email, newUser.passwordCrypted, newUser.name, newUser.surname, newUser.direction, newUser.birthdate, newUser.image],
             (err, result)=>{
-                return res.status(201).json(req.body);
+                return res.status(201).json(result);
             }
         );
     } catch (error) {
