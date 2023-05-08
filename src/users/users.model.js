@@ -1,19 +1,16 @@
-const db = require('mysql');
+const mongoose = require("mongoose")
 
-const Schema = db.Schema;
-
-const UserSchema = new Schema(
+const UserSchema = new mongoose.Schema(
     {
-        id: {type: Number},
         email: {type: String, required: true},
         password: {type: String, required: true},
-        role: {type: String, default: 'user', enum: ['admin', 'client', 'guardian']},
+        role: {type: String, default: 'client', enum: ['admin', 'client', 'guardian']},
         surname: {type: String},
-        birthdate: {type: Date},
+        birthdate: {type: String},
         image: {type: String}
     },
 )
 
-const User = db.model('user', UserSchema);
+const User = mongoose.model('user', UserSchema);
 
 module.exports = User;

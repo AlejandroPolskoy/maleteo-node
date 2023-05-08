@@ -1,20 +1,20 @@
-const mysql = require('mysql');
-const dotenv = require('dotenv').config();
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PSWD,
-    database: process.env.DB_NAME
-});
+const mongoose = require('mongoose');   //requerimos mongoose
 
 const connect = async () => {
-    
-    db.connect(function(err) {
-    if (err) throw err;
-    console.log("MySQL Connected");
-    });
 
-    return db;
+    try {
+        const db = await mongoose.connect(process.env.DB_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+
+        const {name, host} = db.connection;
+        console.log(`Connected to ${name} DB in host: ${host}`)
+        
+    } catch (error) {
+        console.log(`He tenido un error al conectar con mi BBDD: ${error}`)
+    }
+
 }
 
 module.exports = {connect}

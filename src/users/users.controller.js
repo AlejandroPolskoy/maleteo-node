@@ -1,80 +1,61 @@
-//const User = require('./users.model');
+const User = require('./users.model');
 const bcrypt = require('bcrypt');
 const {validateEmail, validatePassword, usedEmail} = require('../utils/validators');
 const { generateSign } = require('../utils/jwt');
-var mysql = require('mysql');
-const dotenv = require('dotenv').config();
-const DB = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PSWD,
-    database: process.env.DB_NAME
-});
 
 const login = async (req, res) => {
-    console.log( req.body);
     try {
-        const userInfo = req.body;
-        
-        if(!userInfo.email || !userInfo.password) return res.status(201).json({message: 'Email and password is required'})
+        const userInfo = await User.findOne({ email: req.body.email});
 
-        DB.query(`SELECT * FROM Users WHERE email = ?`,[req.body.email], (error, results) => {
-            console.log("results: ", error, results);
+        if(!userInfo) {
+            return res.status(204).json({message: 'invalid email address'})
+        }
 
-            if(results.length == 0) {
-                return res.status(201).json({message: 'invalid email address'})
-            }
+        if(!bcrypt.compareSync(req.body.password, userInfo.password)) {
+            return res.status(204).json({message: 'invalid password'});
+        }
 
-            if(req.body.password != results[0].password) {
-                return res.status(201).json({message: 'invalid password'});
-            }
-
-            // if(!bcrypt.compareSync(req.body.password, results[0].password)) {
-            //     return res.status(400).json({message: 'invalid password'});
-            // }
-
-            const token = generateSign(results[0].id, userInfo.email);
-            return res.status(200).json({userInfo, token});
-        });
-
+        const token = generateSign(userInfo._id, userInfo.email);
+        return res.status(200).json({userInfo, token});
     } catch (error) {
         return res.status(500).json(error)
     }
 }
 
 const register = async (req, res) => {
-    //console.log(req.body);
     try {
-        const newUser = req.body;
+        const newUser = new User(req.body);;
 
         if(!validateEmail(newUser.email)){
-            return res.status(400).send({message: 'Invalid email'});
+            return res.status(204).send({message: 'Invalid email'});
         }
 
         if(!validatePassword(newUser.password)){
-            return res.status(400).send({message: 'Invalid password'});
+            return res.status(204).send({message: 'Invalid password'});
         }
 
         if(await usedEmail(newUser.email) > 0){
-            return res.status(400).send({message: 'Email is already in use'});
+            return res.status(204).send({message: 'Email is already in use'});
         }
 
-        newUser.passwordCrypted = bcrypt.hashSync(newUser.password, 10);
+        newUser.password = bcrypt.hashSync(newUser.password, 10);
 
-        DB.query(
-            `INSERT INTO Users (id, email, password, name, surname, direction, birthdate, image) VALUES(0, ?, ?, ?, ?, ?, ?, ?)`
-            , [newUser.email, newUser.password, newUser.name, newUser.surname, newUser.direction, newUser.birthdate, newUser.image],
-            (err, result)=>{
-                return res.status(201).json(result);
-            }
-        );
+        const createdUser = await newUser.save();
+        return res.status(201).json(createdUser);
     } catch (error) {
         return res.status(500).json(error)
     }
 }
 
-function logout(req, res) {
-    // destroy session
+async function logout(req, res) {
+    req.session.destroy();
+    return res.status(200).json( { "mensaje" : "Session terminada" } );
+}
+
+async function tryPassword(req, res) {
+    const passwordCrypted = bcrypt.hashSync("1234", 10);
+    const compare = bcrypt.compareSync("1234", passwordCrypted);
+    return res.status(201).json({message: compare});
 }
 
 const checkSession = async (req, res) => {
@@ -85,18 +66,59 @@ const checkSession = async (req, res) => {
     }
 }
 
-function getUserDetails(req, res) {
-    const {id} = req.query;
+async function getUserDetails(req, res) {
+    const {id} = req.params;
     try {
-        DB.query(`SELECT * FROM Users WHERE id = ?`,[id], (error, result) => {
-            if(result.lenght > 0) {
-                return res.status(200).json({result});
-            }
-        });
+        const userInfo = await User.findOne({_id: id});
+        return res.status(200).json(userInfo);
     } catch(error) {
         return res.status(500).json(error);
     }
-    
 }
 
-module.exports = {login, register, checkSession, getUserDetails, logout};
+async function updateUser(req, res) {
+    try {
+        const {id} = req.params;
+        
+        const userToUpdate = new User(req.body);
+        
+        try {
+            userToUpdate.image = req.file.path;
+        } catch(e) {
+            console.log(e);
+        }
+
+        const userUpdated = await User.findByIdAndUpdate(id, userToUpdate, {new: true });
+        if(!userUpdated) {
+            return res.status(204).json({message: 'Usuario no encontrado'});
+        }
+        
+        return res.status(200).json(userUpdated);
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+}
+
+async function deleteUser(req, res) {
+    try {
+        const {id} = req.params;
+        const userToDelete = await User.findByIdAndDelete();
+        if(!userToDelete) {
+            return res.status(404).json({ "message": "Usuario no encontrado" });
+        }
+        return res.status(200).json(userToDelete);
+    } catch (error) {
+        return res.status(500).json(error)
+    }
+}
+
+module.exports = {
+    login,
+    register, 
+    checkSession, 
+    getUserDetails, 
+    logout, 
+    tryPassword, 
+    updateUser,
+    deleteUser
+};
