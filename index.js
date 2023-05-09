@@ -30,18 +30,18 @@ const socketIO = new Server(server, {
 });
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-// app.use((req, res , next) => {
-//     res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
-//     res.header('Access-Control-Allow-Credentials', 'true');
-//     res.header('Access-Control-Allow-Headers', 'Content-Type');
-//     res.header('Access-Control-Allow-Origin', '*');
-//     next();
-// })
+app.use((req, res , next) => {
+    res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+})
 
-// app.use(cors({
-//     origin: "*",
-//     credentials: true
-// }))
+app.use(cors({
+    origin: "*",
+    credentials: true
+}))
 
 socketIO.on('connection', (socket) => {
     console.log(`⚡: ${socket.id} user just connected!`);

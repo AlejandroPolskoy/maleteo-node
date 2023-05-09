@@ -4,7 +4,7 @@ const upload = require('../middleware/upload.cloud');
 //const { isAuth, isAdmin } = require('../../middlewares/auth');
 const router = express.Router(); 
 
-router.post('/setLocation', setLocation);
+router.post('/setLocation', upload.single('image'), setLocation);
 router.get('/getLocation/:id', getLocation);
 router.get('/getLocations', getAllLocations);
 router.post('/uploadImage', upload.single('image'), uploadImage);

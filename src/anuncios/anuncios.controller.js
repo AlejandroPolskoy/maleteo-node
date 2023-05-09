@@ -1,18 +1,12 @@
-var mysql = require('mysql');
-const dotenv = require('dotenv').config();
-const DB = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PSWD,
-    database: process.env.DB_NAME
-});
+const { Location } = require('./models');
+const User = require('../users/users.model');
 
 // get location by id as query
 async function getLocation(req, res) {
     let {id} = req.query;
     try {
-        const location = await Location.findOne(id);
-        return res.status(200).json(results);
+        const location = await Location.findOne({owner: id});
+        return res.status(200).json(location);
     } catch(e) {
         return res.status(500).json(e);
     }
@@ -29,16 +23,14 @@ async function getAllLocations() {
 
 async function setLocation(req, res) {
     // get or post?
-    const newLocation = new Location(req.body); //post
-    const id = req.body.id || 0;
+    const newLocation = new Location(req.body); //post]
+    
     try {
-        if(id) {
-            // update
-            User.findByIdAndUpdate(id, newLocation, {new: true });
-        } else {
-            // add new
-            newLocation.save();
-        }
+        newLocation.image = req.file.path;
+        const user = await User.findOne( {_id: newLocation.owner} );
+        user.role = "guardian";
+        await user.save();
+        await newLocation.save();
         return res.status(201).json(newLocation);
     } catch(e) {
         return res.status(500).json(e);

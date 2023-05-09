@@ -24,7 +24,7 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        const newUser = new User(req.body);;
+        const newUser = new User(req.body);
 
         if(!validateEmail(newUser.email)){
             return res.status(204).send({message: 'Invalid email'});

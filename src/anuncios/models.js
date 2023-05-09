@@ -1,13 +1,17 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const User = require('./../users/users.model');
 
 const locationSchema = new mongoose.Schema (
     {
-        coords: {type: String, required: true},
-        owner: {type: String, required: true},
+        coords: {type: String },
+        owner: {type: String },
+        title: {type: String },
         description: {type: String },
-        type: {type: String, required: true },
-        propertyType: {type: String, required: true },
-        images: [{type: String}],
+        availability: {type: String },
+        availability2: {type: String },
+        type: {type: String },
+        propertyType: {type: String },
+        image: {type: String},
         capacity: {type: String}
     }
 )
@@ -26,8 +30,8 @@ const Article = mongoose.model("article", articleSchema);
 
 const suitcaseSchema = new mongoose.Schema (
     {
-        user: {type: Schema.Types.ObjectId, ref: 'User'},
-        location: {type: Schema.Types.ObjectId, ref: 'Location'},
+        user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        location: {type: mongoose.Schema.Types.ObjectId, ref: 'Location'},
         date_in: {type: String },
         date_out: {type: String },
         isAccepted: {type: String },
