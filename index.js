@@ -22,7 +22,7 @@ const app = express();
 const server = http.createServer(app);
 const socketIO = new Server(server, {
     cors: {
-        origin: "http://localhost:3000",
+        origin: "*",
         methods: ["GET","POST", "PUT", "DELETE"],
         allowedHeaders: ["Content-Type"],
         "preflightContinue": false,
@@ -31,18 +31,18 @@ const socketIO = new Server(server, {
 });
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use((req, res , next) => {
-    res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    next();
-})
+// app.use((req, res , next) => {
+//     res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
+//     res.header('Access-Control-Allow-Credentials', 'true');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type');
+//     // res.header('Access-Control-Allow-Origin', '*');
+//     next();
+// })
 
-app.use(cors({
-    origin: ["http://localhost:3000"],
-    credentials: true
-}))
+// app.use(cors({
+//     origin: "*",
+//     credentials: true
+// }))
 
 socketIO.on('connection', (socket) => {
     console.log(`⚡: ${socket.id} user just connected!`);
