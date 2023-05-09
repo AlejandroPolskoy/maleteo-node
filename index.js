@@ -24,8 +24,7 @@ app.use(express.urlencoded({extended: true}));
 app.use((req, res , next) => {
     res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
     res.header('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
     next();
 })
 
@@ -57,7 +56,7 @@ socketIO.on('connection', (socket) => {
 
 app.use('/user', userRoutes);
 app.use('/anuncios', anunciosRoutes);
-app.get("/", cors(), (req, res) => {
+app.get("/", (req, res) => {
     res.status(200).json({"message": "Bienvenida al Maleteo"});
 })
 
