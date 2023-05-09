@@ -22,11 +22,12 @@ const app = express();
 const server = http.createServer(app);
 const socketIO = new Server(server, {
     cors: {
-        origin: "*",
+        origins: "*",
         methods: ["GET","POST", "PUT", "DELETE"],
         allowedHeaders: ["*"],
         "preflightContinue": false,
-        "optionsSuccessStatus": 204
+        "optionsSuccessStatus": 204,
+        credentials: true    
     }
 });
 app.use(express.json());
