@@ -24,7 +24,6 @@ const socketIO = new Server(server, {
     cors: {
         origins: "*",
         methods: ["GET","POST", "PUT", "DELETE"],
-        allowedHeaders: ["*"],
         "preflightContinue": false,
         "optionsSuccessStatus": 204,
         credentials: true    
