@@ -40,20 +40,20 @@ app.use((req, res , next) => {
 })
 
 app.use(cors({
-    origin: "*",
+    origin: "http://localhost:3000",
     credentials: true
 }))
 
-socketIO.on('connection', (socket) => {
-    console.log(`⚡: ${socket.id} user just connected!`);
-    socket.on('disconnect', () => {
-      console.log('🔥: A user disconnected');
-    });
+// socketIO.on('connection', (socket) => {
+//     console.log(`⚡: ${socket.id} user just connected!`);
+//     socket.on('disconnect', () => {
+//       console.log('🔥: A user disconnected');
+//     });
 
-    socket.on('message', (data) => {
-        socketIO.emit('messageResponse', data);
-    });
-});
+//     socket.on('message', (data) => {
+//         socketIO.emit('messageResponse', data);
+//     });
+// });
 
 app.use('/user', userRoutes);
 app.use('/anuncios', anunciosRoutes);
