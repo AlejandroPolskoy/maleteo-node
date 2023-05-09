@@ -1,4 +1,4 @@
-const { Location } = require('./models');
+const { Location, Suitcase } = require('./models');
 const User = require('../users/users.model');
 
 // get location by id as query
@@ -22,10 +22,10 @@ async function getLocations(req, res) {
     }
 }
 
-async function getAllLocations() {
+async function getAllLocations(req, res) {
     try {
-        const locations = await Location.findAll();
-        return res.status(200).json(results);
+        const locations = await Location.find();
+        return res.status(200).json(locations);
     } catch(e) {
         return res.status(500).json(e);
     }
@@ -54,4 +54,14 @@ async function uploadImage(req, res) {
     }
 }
 
-module.exports = { getLocation, getAllLocations, setLocation, uploadImage, getLocations };
+async function newReserva(req, res) {
+    try {
+        const suit = new Suitcase(req.body);
+        suit.save();
+        return res.status(200).json(suit);
+    } catch(e) {
+        return res.status(500).json(e);
+    }
+}
+
+module.exports = { getLocation, getAllLocations, setLocation, uploadImage, getLocations, newReserva };
