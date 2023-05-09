@@ -4,7 +4,7 @@ const User = require('./../users/users.model');
 const locationSchema = new mongoose.Schema (
     {
         coords: {type: String },
-        owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        owner: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
         title: {type: String },
         description: {type: String },
         availability: {type: String },
@@ -30,8 +30,8 @@ const Article = mongoose.model("article", articleSchema);
 
 const suitcaseSchema = new mongoose.Schema (
     {
-        user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-        location: {type: mongoose.Schema.Types.ObjectId, ref: 'Location'},
+        user: {type: mongoose.Schema.Types.ObjectId, ref: 'user'},
+        location: {type: mongoose.Schema.Types.ObjectId, ref: 'location'},
         date_in: {type: String },
         date_out: {type: String },
         isAccepted: {type: String },

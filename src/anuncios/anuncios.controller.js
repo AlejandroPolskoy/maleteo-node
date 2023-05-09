@@ -5,6 +5,16 @@ const User = require('../users/users.model');
 async function getLocation(req, res) {
     let {id} = req.params;
     try {
+        const location = await Location.findOne({_id: id}).populate('owner');
+        return res.status(200).json(location);
+    } catch(e) {
+        return res.status(500).json(e);
+    }
+}
+
+async function getLocations(req, res) {
+    let {id} = req.params;
+    try {
         const location = await Location.find({owner: id});
         return res.status(200).json(location);
     } catch(e) {
@@ -44,4 +54,4 @@ async function uploadImage(req, res) {
     }
 }
 
-module.exports = { getLocation, getAllLocations, setLocation, uploadImage };
+module.exports = { getLocation, getAllLocations, setLocation, uploadImage, getLocations };

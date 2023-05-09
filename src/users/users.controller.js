@@ -23,6 +23,7 @@ const login = async (req, res) => {
 }
 
 const register = async (req, res) => {
+    console.log("body:", req.body );
     try {
         const newUser = new User(req.body);
 
