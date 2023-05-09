@@ -4,7 +4,7 @@ const User = require('./../users/users.model');
 const locationSchema = new mongoose.Schema (
     {
         coords: {type: String },
-        owner: {type: String },
+        owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         title: {type: String },
         description: {type: String },
         availability: {type: String },

@@ -3,9 +3,9 @@ const User = require('../users/users.model');
 
 // get location by id as query
 async function getLocation(req, res) {
-    let {id} = req.query;
+    let {id} = req.params;
     try {
-        const location = await Location.findOne({owner: id});
+        const location = await Location.find({owner: id});
         return res.status(200).json(location);
     } catch(e) {
         return res.status(500).json(e);
