@@ -36,8 +36,9 @@ app.use(cors({
 const server = http.createServer(app);
 const socketIO = new Server(server, {
     cors: {
-        origin: ["*", "http://localhost:3000" ],
+        origin: "http://localhost:3000",
         methods: ["GET","POST", "PUT", "DELETE"],
+        allowedHeaders: ["Content-Type"],
         "preflightContinue": false,
         "optionsSuccessStatus": 204
     }
