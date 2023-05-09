@@ -38,7 +38,9 @@ const server = http.createServer(app);
 const socketIO = new Server(server, {
     cors: {
         origin: "*",
-        methods: ['GET', 'POST'],
+        methods: ["GET,HEAD,PUT,PATCH,POST,DELETE"],
+        "preflightContinue": false,
+        "optionsSuccessStatus": 204
     }
 });
 
@@ -53,6 +55,7 @@ socketIO.on('connection', (socket) => {
     });
 });
 
+app.use('/socket.io');
 app.use('/user', userRoutes);
 app.use('/anuncios', anunciosRoutes);
 app.get("/", (req, res) => {
