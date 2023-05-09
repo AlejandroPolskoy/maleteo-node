@@ -25,35 +25,34 @@ const socketIO = new Server(server, {
         origins: "*",
         methods: ["GET","POST", "PUT", "DELETE"],
         "preflightContinue": false,
-        "optionsSuccessStatus": 204,
-        credentials: true    
+        "optionsSuccessStatus": 204,   
     }
 });
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-app.use((req, res , next) => {
-    res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    // res.header('Access-Control-Allow-Origin', '*');
-    next();
-})
+// app.use((req, res , next) => {
+//     res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
+//     res.header('Access-Control-Allow-Credentials', 'true');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type');
+//     res.header('Access-Control-Allow-Origin', '*');
+//     next();
+// })
 
-app.use(cors({
-    origin: "http://localhost:3000",
-    credentials: true
-}))
+// app.use(cors({
+//     origin: "*",
+//     credentials: true
+// }))
 
-// socketIO.on('connection', (socket) => {
-//     console.log(`⚡: ${socket.id} user just connected!`);
-//     socket.on('disconnect', () => {
-//       console.log('🔥: A user disconnected');
-//     });
+socketIO.on('connection', (socket) => {
+    console.log(`⚡: ${socket.id} user just connected!`);
+    socket.on('disconnect', () => {
+      console.log('🔥: A user disconnected');
+    });
 
-//     socket.on('message', (data) => {
-//         socketIO.emit('messageResponse', data);
-//     });
-// });
+    socket.on('message', (data) => {
+        socketIO.emit('messageResponse', data);
+    });
+});
 
 app.use('/user', userRoutes);
 app.use('/anuncios', anunciosRoutes);
@@ -65,4 +64,4 @@ app.use((error, req, res, next) => {
     return res.status(error.status || 500).json(`Error: ${error.message || "Unexpected error"} `);
 })
 
-app.listen(PORT, ()=> console.log(`listening on http://localhost:${PORT}`));
+server.listen(PORT, ()=> console.log(`listening on http://localhost:${PORT}`));
