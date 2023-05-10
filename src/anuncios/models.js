@@ -34,7 +34,9 @@ const suitcaseSchema = new mongoose.Schema (
         location: {type: mongoose.Schema.Types.ObjectId, ref: 'location'},
         date_in: {type: String },
         date_out: {type: String },
-        isAccepted: {type: String },
+        time_in: {type: String },
+        time_out: {type: String },
+        isAccepted: {type: String, default: false },
         cuantity: {type: Number },
     }
 )

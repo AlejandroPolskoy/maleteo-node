@@ -43,8 +43,10 @@ app.use(cors({
     credentials: true
 }))
 
+let users = [];
 socketIO.on('connection', (socket) => {
     console.log(`⚡: ${socket.id} user just connected!`);
+    //console.log( socket.client );
     socket.on('disconnect', () => {
       console.log('🔥: A user disconnected');
     });
@@ -53,6 +55,14 @@ socketIO.on('connection', (socket) => {
         socketIO.emit('messageResponse', data);
     });
 });
+
+socketIO.on('newUser', (data) => {
+    //Adds the new user to the list of users
+    users.push(data);
+    // console.log(users);
+    //Sends the list of users to the client
+    socketIO.emit('newUserResponse', users);
+  });
 
 app.use('/user', userRoutes);
 app.use('/anuncios', anunciosRoutes);

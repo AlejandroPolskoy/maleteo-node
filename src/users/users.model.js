@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema(
         name: {type: String},
         surname: {type: String},
         birthdate: {type: String},
-        image: {type: String}
+        image: {type: String, default: "/assets/usuario@3x.png"}
     },
 )
 
