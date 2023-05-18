@@ -73,7 +73,6 @@ async function getReservas(req, res) {
         for (const location of locations) {
             results.push(await Suitcase.find( {location: location.id, isAccepted: false} ).populate("location user"));
         }
-        console.log( results );
         
         return res.status(200).json(results);
     } catch(e) {

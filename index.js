@@ -45,24 +45,34 @@ app.use(cors({
 
 let users = [];
 socketIO.on('connection', (socket) => {
+    let addedUser = false;
+
     console.log(`⚡: ${socket.id} user just connected!`);
-    //console.log( socket.client );
+    
     socket.on('disconnect', () => {
-      console.log('🔥: A user disconnected');
+        users = users.filter((user)=> user.userID !== socket.userID);
+        socket.emit('newUserResponse', users);
+        console.log(socket.username, 'is disconnected');
     });
 
     socket.on('message', (data) => {
-        socketIO.emit('messageResponse', data);
+        // console.log( data);
+        socket.emit('messageResponse', data);
+        socket.broadcast.emit('messageResponse', data);
+    });
+
+    socket.on('newUser', (data) => {
+        if (addedUser) return;
+        //Adds the new user to the list of users
+        addedUser = true;
+        socket.username = data.userName;
+        socket.userID = data.userID;
+        users.push(data);
+        console.log(data.userName, "is connected");
+        //Sends the list of users to the client
+        socket.emit('newUserResponse', users);
     });
 });
-
-socketIO.on('newUser', (data) => {
-    //Adds the new user to the list of users
-    users.push(data);
-    // console.log(users);
-    //Sends the list of users to the client
-    socketIO.emit('newUserResponse', users);
-  });
 
 app.use('/user', userRoutes);
 app.use('/anuncios', anunciosRoutes);
