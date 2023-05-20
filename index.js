@@ -7,8 +7,12 @@ const http = require('http');
 
 const userRoutes = require('./src/users/users.routes');
 const anunciosRoutes = require('./src/anuncios/anuncios.routes');
+const chatRoutes = require('./src/chat/chat.routes');
 
 const {connect} = require('./src/utils/database');
+const { storeMessages } = require('./src/middleware/chat');
+const { Chat } = require('./src/chat/chat.model');
+const { storeConversation } = require('./src/chat/chat.controller');
 const db = connect();
 
 const PORT = process.env.PORT;
@@ -46,7 +50,7 @@ app.use(cors({
 let users = [];
 socketIO.on('connection', (socket) => {
     let addedUser = false;
-
+    
     console.log(`⚡: ${socket.id} user just connected!`);
     
     socket.on('disconnect', () => {
@@ -56,9 +60,8 @@ socketIO.on('connection', (socket) => {
     });
 
     socket.on('message', (data) => {
-        // console.log( data);
-        socket.emit('messageResponse', data);
-        socket.broadcast.emit('messageResponse', data);
+        storeConversation(data);
+        socket.to(data.roomID).emit('messageResponse', data);
     });
 
     socket.on('newUser', (data) => {
@@ -67,8 +70,10 @@ socketIO.on('connection', (socket) => {
         addedUser = true;
         socket.username = data.userName;
         socket.userID = data.userID;
+        socket.id = data.socketID;
+        socket.join(data.roomID);
         users.push(data);
-        console.log(data.userName, "is connected");
+        console.log(data.userName, "is connected to", data.roomID, "room");
         //Sends the list of users to the client
         socket.emit('newUserResponse', users);
     });
@@ -76,6 +81,7 @@ socketIO.on('connection', (socket) => {
 
 app.use('/user', userRoutes);
 app.use('/anuncios', anunciosRoutes);
+app.use('/chat', chatRoutes);
 app.get("/", (req, res) => {
     res.status(200).json({"message": "Bienvenida al Maleteo"});
 })

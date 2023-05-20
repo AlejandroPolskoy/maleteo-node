@@ -66,6 +66,7 @@ async function newReserva(req, res) {
 
 async function getReservas(req, res) {
     let {id} = req.params;
+
     try {
         const locations = await Location.find( {owner: id} );
         
@@ -82,6 +83,7 @@ async function getReservas(req, res) {
 
 async function acceptReserva(req, res) {
     let {id} = req.params;
+
     try {
         const suit = await Suitcase.findOne( {_id: id} );
         suit.isAccepted = true;
@@ -94,6 +96,7 @@ async function acceptReserva(req, res) {
 
 async function declineReserva(req, res) {
     let {id} = req.params;
+
     try {
         const suit = await Suitcase.deleteOne( {_id: id} );
         return res.status(200).json(suit);
@@ -111,5 +114,5 @@ module.exports = {
     newReserva, 
     getReservas, 
     acceptReserva, 
-    declineReserva
+    declineReserva,
 };

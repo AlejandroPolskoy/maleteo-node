@@ -45,5 +45,5 @@ const Suitcase = mongoose.model("suitcase", suitcaseSchema);
 module.exports = {
     Location, 
     Article,
-    Suitcase
+    Suitcase,
 };
