@@ -34,7 +34,7 @@ const socketIO = new Server(server, {
 });
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-server.use((req, res , next) => {
+app.use((req, res , next) => {
     res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
@@ -42,7 +42,7 @@ server.use((req, res , next) => {
     next();
 })
 
-server.use(cors({
+app.use(cors({
     origin: "*",
     credentials: true
 }))
