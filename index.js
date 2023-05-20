@@ -26,7 +26,7 @@ const app = express();
 const server = http.createServer(app);
 const socketIO = new Server(server, {
     cors: {
-        origins: "*",
+        origins: "https://proyecto-final-maletas.vercel.app/",
         methods: ["GET","POST", "PUT", "DELETE"],
         "preflightContinue": false,
         "optionsSuccessStatus": 204,   
