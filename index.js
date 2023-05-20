@@ -26,7 +26,7 @@ const app = express();
 const server = http.createServer(app);
 const socketIO = new Server(server, {
     cors: {
-        origins: "https://proyecto-final-maletas.vercel.app",
+        origins: "*",
         methods: ["GET","POST", "PUT", "DELETE"],
         "preflightContinue": false,
         "optionsSuccessStatus": 204,   
@@ -38,12 +38,12 @@ app.use((req, res , next) => {
     res.header('Access-Control-Allow-Method', 'POST, GET, DELETE, PUT, PATCH');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
-    res.header('Access-Control-Allow-Origin', 'https://proyecto-final-maletas.vercel.app');
+    res.header('Access-Control-Allow-Origin', '*');
     next();
 })
 
 app.use(cors({
-    origin: "https://proyecto-final-maletas.vercel.app",
+    origin: "*",
     credentials: true
 }))
 
