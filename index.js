@@ -43,7 +43,7 @@ app.use((req, res , next) => {
 })
 
 app.use(cors({
-    origin: "*",
+    origin: "https://proyecto-final-maletas.vercel.app/",
     credentials: true
 }))
 
